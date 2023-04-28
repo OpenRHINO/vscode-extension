@@ -14,8 +14,20 @@
   "contributes": {
     "commands": [
       {
-        "command": "rhino.helloWorld",
-        "title": "Hello World"
+        "command": "rhino.create",
+        "title": "Rhino: Create"
+      },
+      {
+        "command": "rhino.build",
+        "title": "Rhino: Build"
+      },
+      {
+        "command": "rhino.run",
+        "title": "Rhino: Run"
+      },
+      {
+        "command": "rhino.delete",
+        "title": "Rhino: Delete"
       }
     ]
   },
