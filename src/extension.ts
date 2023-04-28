@@ -10,9 +10,11 @@ import rhinoDelete from './cmd/delete';
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	const outputChannel = vscode.window.createOutputChannel('Rhino Build');
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand('rhino.create', rhinoCreate),
-		vscode.commands.registerCommand('rhino.build', rhinoBuild),
+		vscode.commands.registerCommand('rhino.build', () => rhinoBuild(outputChannel)),
 		vscode.commands.registerCommand('rhino.run', rhinoRun),
 		vscode.commands.registerCommand('rhino.delete', rhinoDelete)
 	)

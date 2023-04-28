@@ -1,8 +1,8 @@
 import * as vscode from 'vscode'
-import { execSync } from 'child_process'
+import { exec } from 'child_process'
 import path = require('path')
 
-async function rhinoBuild() {
+async function rhinoBuild(outputChannel: vscode.OutputChannel) {
   // get workspaceFolder path
   const workspaceFolder = vscode.workspace.workspaceFolders 
   if (!workspaceFolder) {
@@ -60,12 +60,24 @@ async function rhinoBuild() {
 
   // launch a subprocess to execute rhino build command
   vscode.window.showInformationMessage(`Building: ${buildCommand}`)
-  try {
-    execSync(buildCommand, {cwd: workspaceFolderPath})
-    vscode.window.showInformationMessage(`Rhino: Build ${imageName} SUCCESS!`)
-  } catch (error) {
-    vscode.window.showErrorMessage(`${error}`)
-  }
+  const rhinoBuildProcess = exec(buildCommand, {cwd: workspaceFolderPath})
+
+  // attach stdout and stderr to channel Rhino:Build
+  rhinoBuildProcess.stdout?.on('data', (data: string) => {
+    outputChannel.appendLine(data)
+  })
+  rhinoBuildProcess.stderr?.on('data', (data:string) => {
+    outputChannel.appendLine(data)
+  })
+
+  rhinoBuildProcess.on('exit', (code: number) => {
+    outputChannel.appendLine(`rhino build process exited with code ${code}`)
+    if (code == 0) {
+      vscode.window.showInformationMessage(`${buildCommand} SUCCESS!`)
+    } else {
+      vscode.window.showErrorMessage(`${buildCommand} FAILED! See Rhino:Build output for details.`)
+    }
+  })
 }
 
 export default rhinoBuild
