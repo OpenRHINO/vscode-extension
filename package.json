@@ -24,10 +24,6 @@
       {
         "command": "rhino.run",
         "title": "Rhino: Run"
-      },
-      {
-        "command": "rhino.delete",
-        "title": "Rhino: Delete"
       }
     ]
   },
