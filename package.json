@@ -24,8 +24,43 @@
       {
         "command": "rhino.run",
         "title": "Rhino: Run"
+      },
+      {
+        "command": "rhino.jobs.refresh",
+        "title": "Refresh Jobs",
+        "icon": "$(refresh)"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "rhino-sidebar",
+          "title": "Rhino",
+          "icon": "src/assets/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "rhino-sidebar":[
+        {
+          "id": "rhino.jobs",
+          "name": "Jobs"
+        },
+        {
+          "id": "rhino.gpt",
+          "name": "GPT"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "rhino.jobs.refresh",
+          "when": "view == rhino.jobs",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
