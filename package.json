@@ -27,8 +27,13 @@
       },
       {
         "command": "rhino.jobs.refresh",
-        "title": "Refresh Jobs",
+        "title": "Rhino: Refresh Job List",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "rhino.jobs.delete",
+        "title": "Rhino: Delete Job",
+        "icon": "$(trash)"
       }
     ],
     "viewsContainers": {
@@ -58,6 +63,13 @@
           "command": "rhino.jobs.refresh",
           "when": "view == rhino.jobs",
           "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "rhino.jobs.delete",
+          "group": "inline",
+          "when": "view == rhino.jobs && viewItem == jobItem"
         }
       ]
     }
