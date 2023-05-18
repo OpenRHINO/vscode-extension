@@ -5,7 +5,8 @@ import * as vscode from 'vscode';
 import rhinoCreate from './cmd/create';
 import rhinoBuild from './cmd/build';
 import rhinoRun from './cmd/run';
-import { JobTreeItem, RhinoJobsProvider, refreshRhinoJobList, deleteRhinoJob } from './rhinojob-provider';
+import { JobTreeItem, RhinoJobsProvider, refreshRhinoJobList, deleteRhinoJob } from './provider/rhinojob_provider';
+import RhinoGPTProvider from './provider/gpt_provider';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -26,16 +27,6 @@ export function activate(context: vscode.ExtensionContext) {
 		)
 
 	refreshRhinoJobList(rhinoJobsProvider)
-}
-
-class RhinoGPTProvider implements vscode.TreeDataProvider<string> {
-	getTreeItem(element: string): vscode.TreeItem | Thenable<vscode.TreeItem> {
-		return new vscode.TreeItem(element)
-	}
-
-	getChildren(element?: string | undefined): vscode.ProviderResult<string[]> {
-		return Promise.resolve([])
-	}
 }
 
 // This method is called when your extension is deactivated
