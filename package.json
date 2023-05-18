@@ -9,6 +9,10 @@
   "categories": [
     "Other"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OpenRHINO/vscode-extension.git"
+  },
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
@@ -46,7 +50,7 @@
       ]
     },
     "views": {
-      "rhino-sidebar":[
+      "rhino-sidebar": [
         {
           "id": "rhino.jobs",
           "name": "Jobs"
@@ -103,6 +107,7 @@
   },
   "dependencies": {
     "generator-code": "^1.7.6",
+    "vsce": "^2.15.0",
     "yo": "^4.3.1"
   }
 }
