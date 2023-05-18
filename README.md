@@ -5,7 +5,16 @@ RHINO is a VSCode extension designed to enhance the user experience for develope
 ## Features
 
 * **Command Execution**: RHINO for VSCode makes running RHINO-CLI commands as easy as a keyboard shortcut. To run a RHINO command, simply toggle the command palatte, select the command you want to execute, provided any necessary arguments and press Enter.
+
+<img src="./src/assets/feature_1.png" alt="eature_1" style="zoom:95%;" />
+
 * **Job Management**: After launching a `RhinoJob`, users can  effortlessly monitor the status of their job from the RHINO sidebar. Deleting a job is as straightforward as clicking the trash button.
+
+<img src="./src/assets/feature_2.png" alt="feature_2" style="zoom:80%;" />
+
+* **Watch Logging**: You can watch build logging through `Rhino Build` output channel.
+
+<img src="./src/assets/feature_3.png" alt="feature_3" style="zoom:75%;" />
 
 ## Usage
 
