@@ -4,7 +4,8 @@ import { execSync } from 'child_process';
 interface RhinoJob {
   name: string,
   parallelism: string,
-  status: string
+  status: string,
+  creation_time: string
 }
 
 export class JobTreeItem extends vscode.TreeItem {
@@ -43,6 +44,7 @@ export class RhinoJobsProvider implements vscode.TreeDataProvider<JobTreeItem> {
       return Promise.resolve([
         new JobTreeItem(`Parallelism: ${element.job.parallelism}`, vscode.TreeItemCollapsibleState.None),
         new JobTreeItem(`Status: ${element.job.status}`, vscode.TreeItemCollapsibleState.None),
+        new JobTreeItem(`Creation Time: ${element.job.creation_time}`, vscode.TreeItemCollapsibleState.None)
       ]);
     } else {
       return Promise.resolve(this.jobs.map((job) => new JobTreeItem(job.name, vscode.TreeItemCollapsibleState.Collapsed, job)));
@@ -69,7 +71,8 @@ function extractRhinoJobs(output: string): RhinoJob[] {
 											const job: RhinoJob = {
                         name: columns[0],
                         parallelism: columns[1],
-                        status: columns[2]
+                        status: columns[2],
+                        creation_time: `${columns[3]} ${columns[4]} ${columns[5]} ${columns[6]}`
                       }
                       return job
 										})

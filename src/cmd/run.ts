@@ -61,6 +61,21 @@ async function rhinoRun() {
     else rhinoRunCommand += ` --dir ${mountDir}`
   }
 
+  const memMode = await vscode.window.showQuickPick(
+    ['FixedPerCoreMemory', 'FixedTotalMemory'],
+    {placeHolder: 'Select the memory allocation mode of the RHINO job, default `FixedPerCoreMemory`'}
+  )
+  if (memMode) {
+    rhinoRunCommand += ` --mem-mode ${memMode}`
+  }
+
+  const memSize = await vscode.window.showInputBox({
+    prompt: 'Please enter the memory allocation size of the RHINO job, in GB (default 2)'
+  })
+  if (memSize) {
+    rhinoRunCommand += ` --mem-size ${memSize}`
+  }
+
   // let user enter command line arguments for application
   let cmdArgs = [] 
   let cmdArgsString = ""
