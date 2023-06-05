@@ -17,16 +17,17 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.window.registerTreeDataProvider('rhino.gpt', new RhinoGPTProvider())
 
 	const outputChannel = vscode.window.createOutputChannel('Rhino Build');
+	const logsOutputChannel = vscode.window.createOutputChannel('Rhino Logs');
 	context.subscriptions.push(
 		vscode.commands.registerCommand('rhino.create', rhinoCreate),
 		vscode.commands.registerCommand('rhino.build', () => rhinoBuild(outputChannel)),
 		vscode.commands.registerCommand('rhino.run', rhinoRun),
-		vscode.commands.registerCommand('rhino.logs', rhinoLogs),
+		vscode.commands.registerCommand('rhino.logs',()=>rhinoLogs(logsOutputChannel)),
 		vscode.commands.registerCommand('rhino.jobs.refresh', () => refreshRhinoJobList(rhinoJobsProvider)),
 		vscode.commands.registerCommand('rhino.jobs.delete', (jobItem: JobTreeItem) => {
 			deleteRhinoJob(rhinoJobsProvider, jobItem.job?.name)
 		})
-		)
+	)
 
 	refreshRhinoJobList(rhinoJobsProvider)
 }

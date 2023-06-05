@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { execSync } from 'child_process';
 
-async function rhinoLogs() {
+async function rhinoLogs(outputChannel: vscode.OutputChannel) {
   let rhinoLogsCommand = 'rhino logs';
 
   const name = await vscode.window.showInputBox({
@@ -14,7 +14,7 @@ async function rhinoLogs() {
   }
 
   const namespace = await vscode.window.showInputBox({
-    prompt: 'Enter the namespace of the RHINO job'
+    prompt: 'Enter the namespace of the RHINO job or press Enter to use default namespace'
   });
   if (namespace) {
     rhinoLogsCommand += ` --namespace ${namespace}`;
@@ -24,11 +24,10 @@ async function rhinoLogs() {
     ['true', 'false'],
     { placeHolder: 'Continuously track the latest updates to the log output' }
   );
-  if (follow === undefined||follow === 'false') {
-    rhinoLogsCommand += ` -f false`;
-  }else{
-    rhinoLogsCommand += ` -f true`;
+  if (follow === 'ture') {
+    rhinoLogsCommand += ` -f`;
   }
+ 
 
   const laucher = await vscode.window.showQuickPick(
     ['true', 'false'],
@@ -36,25 +35,21 @@ async function rhinoLogs() {
   );
   if(laucher === 'true'){
     rhinoLogsCommand += ` -l`;
+  }else{
+    const worker = await vscode.window.showInputBox({
+      prompt: 'Enter the worker pod name or press Enter to get the log of all worker pods',
+      value: '-1',
+    });
+    if(worker === '-1'){
+      rhinoLogsCommand += ` -w`;
+    }else if(Number(worker) >= 0&&Number(worker)%1 === 0){
+      rhinoLogsCommand += ` -w ${worker}`;
+    }else{
+      vscode.window.showErrorMessage('The worker pod name must be a non-negative integer!');
+      return;
+    }
   }
 
-  const worker = await vscode.window.showInputBox({
-    prompt: 'Get the log of the w_th worker pod (0 <= w < worker_num)',
-    value: '-1',
-    validateInput: (value) => {
-      if (follow === 'true') {
-        if(Number(value) > 0 || Number(value) % 1 === 0){
-          vscode.window.showErrorMessage('cannot use -w option when -f is true');
-        }
-      }
-      else if (Number(value) > 0 || Number(value) % 1 === 0) {
-        rhinoLogsCommand += ` -w ${value}`;
-      }else{
-        vscode.window.showErrorMessage('Invalid input. Enter -1 or a non-negative integer.');
-        return 'Invalid input. Enter -1 or a non-negative integer.';
-      }
-    }
-  });
 
   //user add kubeconfig file,if not,use default kubeconfig file
   const kubeconfig = await vscode.window.showInputBox({
@@ -63,12 +58,15 @@ async function rhinoLogs() {
   if (kubeconfig) {
     rhinoLogsCommand += ` --kubeconfig ${kubeconfig}`;
   }
-
-  try {
-    execSync(rhinoLogsCommand, { stdio: 'inherit' });
-  } catch (error) {
+  //output logs to terminal
+  try{
+    const output = execSync(rhinoLogsCommand);
+    outputChannel.appendLine(output.toString());
+    outputChannel.show();
+  } catch(error){
     vscode.window.showErrorMessage(`${error}`);
   }
+
 }
 
 export default rhinoLogs;
