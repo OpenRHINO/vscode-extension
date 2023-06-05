@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 
 import rhinoCreate from './cmd/create';
 import rhinoBuild from './cmd/build';
+import rhinoLogs from './cmd/logs';
 import rhinoRun from './cmd/run';
 import { JobTreeItem, RhinoJobsProvider, refreshRhinoJobList, deleteRhinoJob } from './provider/rhinojob_provider';
 import RhinoGPTProvider from './provider/gpt_provider';
@@ -20,6 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('rhino.create', rhinoCreate),
 		vscode.commands.registerCommand('rhino.build', () => rhinoBuild(outputChannel)),
 		vscode.commands.registerCommand('rhino.run', rhinoRun),
+		vscode.commands.registerCommand('rhino.logs', rhinoLogs),
 		vscode.commands.registerCommand('rhino.jobs.refresh', () => refreshRhinoJobList(rhinoJobsProvider)),
 		vscode.commands.registerCommand('rhino.jobs.delete', (jobItem: JobTreeItem) => {
 			deleteRhinoJob(rhinoJobsProvider, jobItem.job?.name)

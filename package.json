@@ -30,6 +30,10 @@
         "title": "Rhino: Run"
       },
       {
+        "command": "rhino.logs",
+        "title": "Rhino: Logs"
+      },
+      {
         "command": "rhino.jobs.refresh",
         "title": "Rhino: Refresh Job List",
         "icon": "$(refresh)"
