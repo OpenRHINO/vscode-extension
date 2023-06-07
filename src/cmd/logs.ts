@@ -4,8 +4,6 @@ import { execSync } from 'child_process';
 let panel: vscode.WebviewPanel | undefined = undefined;
 
 async function rhinoLogs(jobName: string | undefined) {
-  let rhinoLogsCommand = 'rhino logs';
-
   if (!jobName) {
     vscode.window.showErrorMessage('Error: no job name provided');
     return;
@@ -35,8 +33,8 @@ async function rhinoLogs(jobName: string | undefined) {
     // 更新 webview 的内容
     panel.webview.html = getWebViewContent(logsWithTimestamp);
   } catch (error) {
-    vscode.window.showErrorMessage(`${error}`);
-  }
+      vscode.window.showErrorMessage(`Error executing command: ${error}`);
+    }
 }
 
 function addTimestampToLogs(logs: string): string {
@@ -46,9 +44,11 @@ function addTimestampToLogs(logs: string): string {
 
 function getWebViewContent(logs: string): string {
   return `
-    <body>
-      <pre>${logs}</pre>
-    </body>
+    <html>
+      <body>
+        <pre>${logs}</pre>
+      </body>
+    </html>
   `;
 }
 
