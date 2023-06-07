@@ -1,72 +1,55 @@
 import * as vscode from 'vscode';
 import { execSync } from 'child_process';
 
-async function rhinoLogs(outputChannel: vscode.OutputChannel) {
+let panel: vscode.WebviewPanel | undefined = undefined;
+
+async function rhinoLogs(jobName: string | undefined) {
   let rhinoLogsCommand = 'rhino logs';
 
-  const name = await vscode.window.showInputBox({
-    prompt: 'Enter the name of the RHINO job'
-  });
-  if (!name) {
+  if (!jobName) {
+    vscode.window.showErrorMessage('Error: no job name provided');
     return;
-  }else{
-    rhinoLogsCommand += ` ${name}`;
   }
 
-  const namespace = await vscode.window.showInputBox({
-    prompt: 'Enter the namespace of the RHINO job or press Enter to use default namespace'
-  });
-  if (namespace) {
-    rhinoLogsCommand += ` --namespace ${namespace}`;
-  }
+  if (!panel) {
+    // 创建新的 webview
+    panel = vscode.window.createWebviewPanel(
+      'rhinoLogs',
+      `Logs for job ${jobName}`,
+      vscode.ViewColumn.One,
+      {}
+    );
 
-  const follow = await vscode.window.showQuickPick(
-    ['true', 'false'],
-    { placeHolder: 'Continuously track the latest updates to the log output' }
-  );
-  if (follow === 'ture') {
-    rhinoLogsCommand += ` -f`;
-  }
- 
-
-  const laucher = await vscode.window.showQuickPick(
-    ['true', 'false'],
-    { placeHolder: 'Get the log of the launcher pod'}
-  );
-  if(laucher === 'true'){
-    rhinoLogsCommand += ` -l`;
-  }else{
-    const worker = await vscode.window.showInputBox({
-      prompt: 'Enter the worker pod name or press Enter to get the log of all worker pods',
-      value: '-1',
+    panel.onDidDispose(() => {
+      // 当 webview 被关闭时重置 panel 变量
+      panel = undefined;
     });
-    if(worker === '-1'){
-      rhinoLogsCommand += ` -w`;
-    }else if(Number(worker) >= 0&&Number(worker)%1 === 0){
-      rhinoLogsCommand += ` -w ${worker}`;
-    }else{
-      vscode.window.showErrorMessage('The worker pod name must be a non-negative integer!');
-      return;
-    }
   }
 
+  try {
+    // 获取最新的日志内容
+    const logsOutput = execSync(`rhino logs ${jobName}`).toString();
+    // 添加时间戳
+    const logsWithTimestamp = addTimestampToLogs(logsOutput);
 
-  //user add kubeconfig file,if not,use default kubeconfig file
-  const kubeconfig = await vscode.window.showInputBox({
-    prompt: 'Enter the path of kubeconfig file or press Enter to use default kubeconfig file'
-  });
-  if (kubeconfig) {
-    rhinoLogsCommand += ` --kubeconfig ${kubeconfig}`;
-  }
-  //output logs to terminal
-  try{
-    const output = execSync(rhinoLogsCommand);
-    outputChannel.appendLine(output.toString());
-    outputChannel.show();
-  } catch(error){
+    // 更新 webview 的内容
+    panel.webview.html = getWebViewContent(logsWithTimestamp);
+  } catch (error) {
     vscode.window.showErrorMessage(`${error}`);
   }
+}
 
+function addTimestampToLogs(logs: string): string {
+  const timestamp = new Date().toLocaleString();
+  return `${timestamp}\n${logs}`;
+}
+
+function getWebViewContent(logs: string): string {
+  return `
+    <body>
+      <pre>${logs}</pre>
+    </body>
+  `;
 }
 
 export default rhinoLogs;

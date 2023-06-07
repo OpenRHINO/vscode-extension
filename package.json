@@ -31,7 +31,8 @@
       },
       {
         "command": "rhino.logs",
-        "title": "Rhino: Logs"
+        "title": "Rhino: Logs",
+        "icon": "$(output)"
       },
       {
         "command": "rhino.jobs.refresh",
@@ -79,10 +80,11 @@
           "group": "inline",
           "when": "view == rhino.jobs && viewItem == jobItem"
         },
-    {
-      "command": "rhino.logs",
-      "when": "view == rhino.jobs && viewItem == jobItem"
-    }
+        {
+          "command": "rhino.logs",
+          "group": "inline",
+          "when": "view == rhino.jobs && viewItem == jobItem"
+        }
       ]
     }
   },
