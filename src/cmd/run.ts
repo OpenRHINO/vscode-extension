@@ -2,29 +2,14 @@ import * as vscode from 'vscode'
 import { execSync } from 'child_process'
 
 async function rhinoRun() {
-  // get all available docker images
-  let images: string[] = []
-  try {
-    const output = execSync('docker images')
-    images = extractImageNames(output.toString())
-  } catch (error) {
-    vscode.window.showErrorMessage(`${error}`)
-  }
-
-  if (images.length == 0) {
-    vscode.window.showErrorMessage('No available Docker images to run!')
-    return
-  }
-
-  // let user select which images to run
-  const selectedImage = await vscode.window.showQuickPick(images, {
-    placeHolder: 'Select a Docker image to run'
+  const imageName = await vscode.window.showInputBox({
+    prompt: 'Enter the name of docker image to run'
   })
-  if (!selectedImage) {
+  if (!imageName) {
     return
   }
 
-  let rhinoRunCommand = `rhino run ${selectedImage}`
+  let rhinoRunCommand = `rhino run ${imageName}`
 
   // let user enter arguments for rhino run, like namespace, np, ttl, ...
   const namespace = await vscode.window.showInputBox({
