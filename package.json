@@ -84,6 +84,10 @@
           "command": "rhino.logs",
           "group": "inline",
           "when": "view == rhino.jobs && viewItem == jobItem"
+        },
+        {
+          "command": "rhino.logs",
+          "when": "view == rhino.jobs && viewItem == jobItem"
         }
       ]
     }
