@@ -29,29 +29,12 @@ async function rhinoLogs(jobName: string | undefined) {
     const logsOutput = execSync(`rhino logs ${jobName}`).toString();
     // 添加时间戳
     const logsWithTimestamp = addTimestampToLogs(logsOutput);
+
     // 更新 webview 的内容
     panel.webview.html = getWebViewContent(logsWithTimestamp);
   } catch (error) {
-    vscode.window.showErrorMessage(`Error executing command: ${error}`);
-  }
-}
-
-// 从 rhino logs 命令的输出中提取日志内容返回并显示在 webview 中
-function getLogsAndShowInWebview(jobName: string, panel: vscode.WebviewPanel): { logs: string, error: Error | null } {
-  if (!jobName) {
-    return { logs: "", error: new Error('Error: no job name provided') };
-  }
-  if (!panel) {
-    return { logs: "", error: new Error('Error: no panel provided') };
-  }
-  try {
-    const logsOutput = execSync(`rhino logs ${jobName}`).toString();
-    const logsWithTimestamp = addTimestampToLogs(logsOutput);
-    panel.webview.html = getWebViewContent(logsWithTimestamp);
-    return { logs: logsOutput, error: null };
-  } catch (error) {
-    return { logs: "", error: new Error(`Error executing command: ${error}`) };
-  }
+      vscode.window.showErrorMessage(`Error executing command: ${error}`);
+    }
 }
 
 function addTimestampToLogs(logs: string): string {
