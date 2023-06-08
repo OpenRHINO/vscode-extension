@@ -8,6 +8,15 @@ interface RhinoJob {
   creation_time: string
 }
 
+function newRhinoJob(name:string, parallelism:string, status:string, creation_time: string): RhinoJob {
+  return {
+    name,
+    parallelism,
+    status,
+    creation_time
+  }
+}
+
 export class JobTreeItem extends vscode.TreeItem {
   constructor(
     public readonly label: string,
@@ -70,30 +79,26 @@ function extractRhinoJobs(output: string): RhinoJob[] {
   // * parallelism: columns[1]
   // * status columns[2]
   // * creation_time: `${columns[3]} ${columns[4]} ${columns[5]} ${columns[6]}`
-  const EXPCTED_RHINO_LIST_OUTPUT_COL_NUM = 7
+  const EXPECTED_RHINO_LIST_OUTPUT_COL_NUM = 7
 
 	const lines = output.trim().split(/\r?\n/)
 	const jobs = lines.slice(1)
 								.map(line => {
 									const columns = line.trim().split(/\s+/)
-                  if (columns.length != EXPCTED_RHINO_LIST_OUTPUT_COL_NUM) {
+                  const name = columns[0]
+                  const parallelism = columns[1]
+                  let status = columns[2]
+                  let creation_time = `${columns[3]} ${columns[4]} ${columns[5]} ${columns[6]}`
+
+                  if (columns.length != EXPECTED_RHINO_LIST_OUTPUT_COL_NUM) {
                     // status not updated, may caused by not running rhino-operator
-                    const job: RhinoJob = {
-                      name: columns[0],
-                      parallelism: columns[1],
-                      status: "",
-                      creation_time: `${columns[2]} ${columns[3]} ${columns[4]} ${columns[5]}`
-                    }
-                    return job
+                    // in this case, status is not displayed in `rhino list` output
+                    // so reset `status` and `creation_time` variable
+                    status = ""
+                    creation_time = `${columns[2]} ${columns[3]} ${columns[4]} ${columns[5]}`
                   }
 
-									const job: RhinoJob = {
-                    name: columns[0],
-                    parallelism: columns[1],
-                    status: columns[2],
-                    creation_time: `${columns[3]} ${columns[4]} ${columns[5]} ${columns[6]}`
-                  }
-                  return job
+                  return newRhinoJob(name, parallelism, status, creation_time)
 								})
 	return jobs
 }
