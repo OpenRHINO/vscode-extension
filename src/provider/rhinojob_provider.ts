@@ -64,12 +64,19 @@ export async function refreshRhinoJobList(rhinoJobsProvider: RhinoJobsProvider) 
 }
 
 function extractRhinoJobs(output: string): RhinoJob[] {
-  const RHINO_LIST_OUTPUT_COL_NUM = 7
+  // expected column num of `rhino list` output
+  // consists of the following 4 parts:
+  // * name: columns[0]
+  // * parallelism: columns[1]
+  // * status columns[2]
+  // * creation_time: `${columns[3]} ${columns[4]} ${columns[5]} ${columns[6]}`
+  const EXPCTED_RHINO_LIST_OUTPUT_COL_NUM = 7
+
 	const lines = output.trim().split(/\r?\n/)
 	const jobs = lines.slice(1)
 								.map(line => {
 									const columns = line.trim().split(/\s+/)
-                  if (columns.length != RHINO_LIST_OUTPUT_COL_NUM) {
+                  if (columns.length != EXPCTED_RHINO_LIST_OUTPUT_COL_NUM) {
                     // status not updated, may caused by not running rhino-operator
                     const job: RhinoJob = {
                       name: columns[0],
