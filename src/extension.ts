@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.window.registerTreeDataProvider('rhino.gpt', new RhinoGPTProvider())
 
 	const outputChannel = vscode.window.createOutputChannel('Rhino Build');
-	const logsOutputChannel = vscode.window.createOutputChannel('Rhino Logs');
+	
 	context.subscriptions.push(
 		vscode.commands.registerCommand('rhino.create', rhinoCreate),
 		vscode.commands.registerCommand('rhino.build', () => rhinoBuild(outputChannel)),

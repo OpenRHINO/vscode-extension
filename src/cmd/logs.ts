@@ -27,19 +27,11 @@ async function rhinoLogs(jobName: string | undefined) {
   try {
     // 获取最新的日志内容
     const logsOutput = execSync(`rhino logs ${jobName}`).toString();
-    // 添加时间戳
-    const logsWithTimestamp = addTimestampToLogs(logsOutput);
-
     // 更新 webview 的内容
-    panel.webview.html = getWebViewContent(logsWithTimestamp);
+    panel.webview.html = getWebViewContent(logsOutput);
   } catch (error) {
-      vscode.window.showErrorMessage(`Error executing command: ${error}`);
+      vscode.window.showErrorMessage(`${error}`);
     }
-}
-
-function addTimestampToLogs(logs: string): string {
-  const timestamp = new Date().toLocaleString();
-  return `${timestamp}\n${logs}`;
 }
 
 function getWebViewContent(logs: string): string {
