@@ -13,8 +13,13 @@ import RhinoGPTProvider from './provider/gpt_provider';
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	const rhinoJobsProvider = new RhinoJobsProvider()
+	const rhinoGPTProvider = new RhinoGPTProvider()
 	vscode.window.registerTreeDataProvider('rhino.jobs', rhinoJobsProvider)
-	vscode.window.registerTreeDataProvider('rhino.gpt', new RhinoGPTProvider())
+	vscode.window.registerTreeDataProvider('rhino.gpt', rhinoGPTProvider)
+
+	const treeView = vscode.window.createTreeView('rhino.jobs',{
+		treeDataProvider: rhinoJobsProvider
+	});
 
 	const outputChannel = vscode.window.createOutputChannel('Rhino Build');
 	
@@ -26,6 +31,12 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('rhino.jobs.refresh', () => refreshRhinoJobList(rhinoJobsProvider)),
 		vscode.commands.registerCommand('rhino.jobs.delete', (jobItem: JobTreeItem) => {
 			deleteRhinoJob(rhinoJobsProvider, jobItem.job?.name)
+		}),
+		vscode.commands.registerCommand('rhino.gpt.analysis', () => {
+			// 获取job item
+			const jobItem = treeView.selection[0];
+			// 分析日志
+			rhinoGPTProvider.analyzeLogs(jobItem.job?.name)
 		})
 	)
 
