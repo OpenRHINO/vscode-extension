@@ -18,6 +18,11 @@
   "contributes": {
     "commands": [
       {
+        "command": "rhino.gpt.analysis",
+        "title": "Analyze Logs with GPT",
+        "icon": "ChatGPT.png"
+      },
+      {
         "command": "rhino.create",
         "title": "Rhino: Create"
       },
@@ -28,6 +33,11 @@
       {
         "command": "rhino.run",
         "title": "Rhino: Run"
+      },
+      {
+        "command": "rhino.logs",
+        "title": "Rhino: Logs",
+        "icon": "$(output)"
       },
       {
         "command": "rhino.jobs.refresh",
@@ -62,6 +72,12 @@
       ]
     },
     "menus": {
+      "editor/title": [
+        {
+          "command": "rhino.gpt.analysis",
+          "group": "navigation"
+        }
+      ],
       "view/title": [
         {
           "command": "rhino.jobs.refresh",
@@ -72,6 +88,11 @@
       "view/item/context": [
         {
           "command": "rhino.jobs.delete",
+          "group": "inline",
+          "when": "view == rhino.jobs && viewItem == jobItem"
+        },
+        {
+          "command": "rhino.logs",
           "group": "inline",
           "when": "view == rhino.jobs && viewItem == jobItem"
         }
@@ -106,7 +127,9 @@
     "webpack-cli": "^5.0.2"
   },
   "dependencies": {
+    "axios": "^1.4.0",
     "generator-code": "^1.7.6",
+    "openai": "^3.2.1",
     "vsce": "^2.15.0",
     "yo": "^4.3.1"
   }
